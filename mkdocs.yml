@@ -1,0 +1,14 @@
+site_name: "datarails Documentation"
+
+plugins:
+  - mkdocstrings
+  - search:
+      lang: en
+
+theme:
+  name: "material"
+  logo: assets/heyjobs.logo
+  favicon: assets/HeyFavicon-08.webp
+
+extra_css:
+    - stylesheets/extra.css
