@@ -1,9 +1,9 @@
-from datarails.databox import DataBox
 from typing import Optional
+
+from datarails.databox import DataBox
 
 
 class StepRunner:
-
     def __init__(self, steps: list) -> None:
         self.steps = steps
         self.steps_iterator = iter(self.steps)
@@ -19,14 +19,14 @@ class StepRunner:
             self.dbx = step_instance.run_steps()
         except StopIteration:
             if stepper:
-                print('No more steps to execute. Reset and try again.')
+                print("No more steps to execute. Reset and try again.")
             else:
                 raise
 
     def run(self) -> None:
         while True:
             try:
-                self.advance()
+                self.advance(stepper=False)
             except StopIteration:
-                print('No more steps to execute. Reset and try again.')
+                print("No more steps to execute. Reset and try again.")
                 break

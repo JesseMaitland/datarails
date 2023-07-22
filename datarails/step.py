@@ -1,22 +1,24 @@
+from typing import Callable, Optional
+
 from datarails.databox import DataBox
-from typing import Optional, Callable
 
 
-class _StepMeta(type):
+class StepMeta(type):
     def __new__(cls, name, bases, attrs):
         # Create the class as normal.
         klass = super().__new__(cls, name, bases, attrs)
 
         # Add a list to the class that contains all the methods starting with 'step_'.
         # We don't include 'self' in these methods yet, because we don't have an instance.
-        klass.step_methods = [k for k, v in attrs.items() if callable(v) and k.startswith('step_')]
+        klass.step_methods = [k for k, v in attrs.items() if callable(v) and k.startswith("step_")]
 
         return klass
 
 
-class DataRailsStep(metaclass=_StepMeta):
-
-    def __init__(self, dbx: DataBox, on_entry_callback: Optional[Callable] = None, on_exit_callback: Optional[Callable] = None) -> None:
+class DataRailsStep(metaclass=StepMeta):
+    def __init__(
+        self, dbx: DataBox, on_entry_callback: Optional[Callable] = None, on_exit_callback: Optional[Callable] = None
+    ) -> None:
         self.dbx = dbx
         self.step_method_name_generator = None
         self.on_entry_callback = on_entry_callback
@@ -46,6 +48,6 @@ class DataRailsStep(metaclass=_StepMeta):
             method()
         except StopIteration:
             if stepper:
-                print('No more steps to execute. Reset and try again.')
+                print("No more steps to execute. Reset and try again.")
             else:
                 raise

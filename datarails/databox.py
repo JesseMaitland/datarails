@@ -2,7 +2,6 @@ from datarails.type_vars import DataFrame
 
 
 class DataBox:
-
     def __init__(self, **kwargs) -> None:
         for k, v in kwargs.items():
             setattr(self, k, v)
