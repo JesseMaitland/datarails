@@ -66,3 +66,8 @@ test:                  ## Run project tests using pytest
 .PHONY: sort-imports
 sort-imports:          ## Sort imports in project files
 	. venv/bin/activate && python -m isort ${PROJECT_DIR} ${TEST_DIR}
+
+
+.PHONY: check-sort-imports
+check-sort-imports:    ## Run isort linter to check sorting of imports in project files
+	. venv/bin/activate && python -m isort --check-only ${PROJECT_DIR} ${TEST_DIR}
