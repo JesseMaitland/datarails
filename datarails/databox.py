@@ -1,3 +1,4 @@
+from typing import List
 from datarails.type_vars import DataFrame
 
 
@@ -5,6 +6,9 @@ class DataBox:
     def __init__(self, **kwargs) -> None:
         for k, v in kwargs.items():
             setattr(self, k, v)
+
+    def __str__(self) -> str:
+        return f"DataBox({self.list_contents()})"
 
     def get_df(self, name: str) -> DataFrame:
         return getattr(self, name)
@@ -19,3 +23,6 @@ class DataBox:
 
     def delete_df(self, name: str) -> None:
         delattr(self, name)
+
+    def list_contents(self) -> List[str]:
+        return [k for k in vars(self).keys()]
