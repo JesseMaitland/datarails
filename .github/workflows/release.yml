@@ -52,8 +52,6 @@ jobs:
         run: make release
 
       - name: Push Version Bump
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
         run: git push
 
       - name: Build Package
@@ -61,3 +59,5 @@ jobs:
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
