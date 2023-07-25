@@ -44,7 +44,7 @@ build-mkdocs:          ## Build mkdocs documentation
 
 .PHONY: release
 release:            ## Install only the dependencies to make a semantic release
-	. venv/bin/activate semantic-release version
+	. venv/bin/activate && semantic-release version
 
 
 .PHONY: build
