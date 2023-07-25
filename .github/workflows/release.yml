@@ -55,6 +55,7 @@ jobs:
         run: git push
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
       - name: Build Package
         run: make build
