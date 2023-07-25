@@ -51,6 +51,12 @@ jobs:
       - name: Increment Version
         run: make release
 
+      - name: Commit Version Bump
+        run: |
+          git add .
+          git commit -m "Bump version"
+          git push
+
       - name: Build Package
         run: make build
 
