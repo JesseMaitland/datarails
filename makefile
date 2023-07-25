@@ -44,7 +44,12 @@ build-mkdocs:          ## Build mkdocs documentation
 
 .PHONY: release
 release:            ## Install only the dependencies to make a semantic release
-	. venv/bin/activate semantic-release publish
+	. venv/bin/activate semantic-release version
+
+
+.PHONY: build
+build:                 ## Build project
+	. venv/bin/activate && python -m build
 
 ######################### RUN TESTS AND LINTER ####################################
 
