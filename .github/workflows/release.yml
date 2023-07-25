@@ -52,7 +52,9 @@ jobs:
         run: make release
 
       - name: Push Version Bump
-        run: git push
+        run: |
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/JesseMaitland/datarails.git
+            git push
 
       - name: Build Package
         run: make build
