@@ -53,6 +53,8 @@ jobs:
 
       - name: Push Version Bump
         run: git push
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Package
         run: make build
