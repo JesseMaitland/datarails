@@ -49,7 +49,7 @@ jobs:
       - name: Push Version Bump
         run: git push
 
-  pypi-publish:
+  pypi_publish:
     name: Upload release to PyPI
     runs-on: ubuntu-latest
     needs: build_release
@@ -75,3 +75,20 @@ jobs:
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  build_docs:
+    needs: build_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.5
+
+      - name: Make Development Environment
+        run: make docvenv
+
+      - name: Install MkDocs
+        run: make install-docs
+
+      - run: mkdocs gh-deploy --force
