@@ -1,9 +1,9 @@
 from typing import Callable, Optional
 
-from datarails.databox import DataBox
+from datarails.contexts import DataBox, DataRailsContext
 
 
-class StepMeta(type):
+class _StepMeta(type):
     def __new__(cls, name, bases, attrs):
         # Create the class as normal.
         klass = super().__new__(cls, name, bases, attrs)
@@ -15,7 +15,7 @@ class StepMeta(type):
         return klass
 
 
-class DataRailsStep(metaclass=StepMeta):
+class DataRailsStep(metaclass=_StepMeta):
     """
     Represents a step in a data pipeline process. This class is meant to be inherited from and not used directly.
     All methods that are declared with the prefix 'step_' on the child class will be run in order in which they are
@@ -31,7 +31,11 @@ class DataRailsStep(metaclass=StepMeta):
     """
 
     def __init__(
-        self, dbx: DataBox, on_entry_callback: Optional[Callable] = None, on_exit_callback: Optional[Callable] = None
+        self,
+        dbx: DataBox,
+        ctx: DataRailsContext,
+        on_entry_callback: Optional[Callable] = None,
+        on_exit_callback: Optional[Callable] = None,
     ) -> None:
         """
         Constructs all the necessary attributes for the DataRailsStep object.
@@ -42,6 +46,7 @@ class DataRailsStep(metaclass=StepMeta):
             on_exit_callback (Callable, optional): The function to call upon exiting a step. Default is None.
         """
         self.dbx = dbx
+        self.ctx = ctx
         self.step_method_name_generator = None
         self.on_entry_callback = on_entry_callback
         self.on_exit_callback = on_exit_callback

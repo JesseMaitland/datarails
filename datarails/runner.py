@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import List, Optional
 
-from datarails.databox import DataBox
+from datarails.contexts import DataBox, DataRailsContext
 
 
 class StepRunner:
@@ -13,7 +13,7 @@ class StepRunner:
         dbx (DataBox): A DataBox object for data management.
     """
 
-    def __init__(self, steps: list) -> None:
+    def __init__(self, steps: List, dbx: Optional[DataBox] = None, ctx: Optional[DataRailsContext] = None) -> None:
         """
         Constructs all the necessary attributes for the StepRunner object.
 
@@ -22,7 +22,8 @@ class StepRunner:
         """
         self.steps = steps
         self.steps_iterator = iter(self.steps)
-        self.dbx = DataBox()
+        self.dbx = dbx or DataBox()
+        self.ctx = ctx or DataRailsContext()
 
     def reset(self):
         """
@@ -44,7 +45,7 @@ class StepRunner:
         """
         try:
             step = next(self.steps_iterator)
-            step_instance = step(self.dbx)
+            step_instance = step(self.dbx, self.ctx)
             self.dbx = step_instance.run_steps()
         except StopIteration:
             if stepper:

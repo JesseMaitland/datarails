@@ -16,3 +16,5 @@ theme:
 nav:
   - DataRailsStep: step.md
   - StepRunner: runner.md
+  - DataBox: databox.md
+  - DataRailsContext: context.md

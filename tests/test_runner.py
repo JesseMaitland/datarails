@@ -1,6 +1,6 @@
 import pytest
 
-from datarails.databox import DataBox
+from datarails.contexts import DataBox
 from datarails.runner import (
     StepRunner,  # Replace with actual module where StepRunner is defined
 )

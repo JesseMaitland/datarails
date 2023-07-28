@@ -1,10 +1,10 @@
 import pytest
 
-from datarails.databox import DataBox
+from datarails.contexts import DataBox, DataRailsContext
 from datarails.step import DataRailsStep
 
 
-class TestStep(DataRailsStep):
+class DummyStep(DataRailsStep):
     def step_one(self):
         pass
 
@@ -15,7 +15,8 @@ class TestStep(DataRailsStep):
 @pytest.fixture
 def test_step_instance():
     dbx = DataBox()
-    return TestStep(dbx)
+    ctx = DataRailsContext()
+    return DummyStep(dbx, ctx)
 
 
 def test_constructor(test_step_instance: DataRailsStep) -> None:
@@ -56,6 +57,8 @@ def test_on_entry_exit_callbacks():
     def mock_callback():
         return True
 
-    step_instance_with_callback = TestStep(DataBox(), on_entry_callback=mock_callback, on_exit_callback=mock_callback)
+    step_instance_with_callback = DummyStep(
+        DataBox(), DataRailsContext(), on_entry_callback=mock_callback, on_exit_callback=mock_callback
+    )
     assert step_instance_with_callback.on_entry_callback() == True
     assert step_instance_with_callback.on_exit_callback() == True
