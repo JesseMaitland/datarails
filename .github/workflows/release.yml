@@ -92,4 +92,4 @@ jobs:
         run: make install-docs
 
       - name: Build Docs and Publish
-      - run: . docvenv/bin/activate && mkdocs gh-deploy --force
+        run: . docvenv/bin/activate && mkdocs gh-deploy --force
