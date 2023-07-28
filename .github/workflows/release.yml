@@ -8,7 +8,7 @@ on:
 # .github/workflows/ci-cd.yml
 jobs:
   build_release:
-    name: upload release to PyPI
+    name: Increment Release Version and Run QA
     runs-on: ubuntu-latest
     steps:
       # retrieve your distributions here
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_release
     environment:
-      name: pypi
+      name: release
       url: https://pypi.org/p/datarails
     permissions:
       id-token: write
