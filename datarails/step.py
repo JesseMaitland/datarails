@@ -25,6 +25,9 @@ class DataRailsStep(metaclass=StepMeta):
         self.on_exit_callback = on_exit_callback
         self.reset()
 
+    def __str__(self) -> str:
+        return self.__class__.__name__
+
     def reset(self) -> None:
         self.step_method_name_generator = iter(self.step_methods)
 
