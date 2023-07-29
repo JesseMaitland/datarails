@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import Mock, call
+
+import pytest
+
 from datarails.contexts import DataBox, DataRailsContext
 from datarails.step import DataRailsStep
 
 
 class TestStep(DataRailsStep):
-
     def step_setup(self):
         self.dbx.data = 0
 
@@ -34,7 +35,7 @@ def mock_callbacks():
 
 
 def test_step_methods_collected():
-    assert TestStep.step_methods == ['step_setup', 'step_one', 'step_two']
+    assert TestStep.step_methods == ["step_setup", "step_one", "step_two"]
 
 
 def test_init(mock_databox, mock_context):

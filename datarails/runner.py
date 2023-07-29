@@ -1,7 +1,7 @@
 from typing import List, Optional, Type
 
-from datarails.step import DataRailsStep
 from datarails.contexts import DataBox, DataRailsContext
+from datarails.step import DataRailsStep
 
 
 class DataRailsStepRunner:
@@ -15,8 +15,9 @@ class DataRailsStepRunner:
         ctx (DataRailsContext): The DataRailsContext object for context management.
     """
 
-    def __init__(self, steps: List[Type[DataRailsStep]], dbx: Optional[DataBox] = None,
-                 ctx: Optional[DataRailsContext] = None) -> None:
+    def __init__(
+        self, steps: List[Type[DataRailsStep]], dbx: Optional[DataBox] = None, ctx: Optional[DataRailsContext] = None
+    ) -> None:
         """
         Initializes the StepRunner object with a list of DataRailsStep classes.
 

@@ -29,11 +29,11 @@ class DataRailsStep(metaclass=_StepMeta):
     """
 
     def __init__(
-            self,
-            dbx: DataBox,
-            ctx: DataRailsContext,
-            on_entry_callback: Optional[Callable] = None,
-            on_exit_callback: Optional[Callable] = None,
+        self,
+        dbx: DataBox,
+        ctx: DataRailsContext,
+        on_entry_callback: Optional[Callable] = None,
+        on_exit_callback: Optional[Callable] = None,
     ) -> None:
         """
         Constructs all the necessary attributes for the DataRailsStep object.
