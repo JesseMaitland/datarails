@@ -1,5 +1,5 @@
 # datarails -- A Simple Framework for Dataframe ETL
-####  -- VERSION 0.2.6 --
+####  -- VERSION 0.2.7 --
 
 ## Official Documentation
 The official documentation is hosted on github pages at [jesse.maitland.github.io](https://jessemaitland.github.io/datarails/)
