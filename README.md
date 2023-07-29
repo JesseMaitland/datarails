@@ -1,5 +1,7 @@
+[![Release python package](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml/badge.svg)](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml)
 # datarails -- A Simple Framework for Dataframe ETL
 ####  -- VERSION 0.2.6 --
+
 
 ## Official Documentation
 The official documentation is hosted on github pages at [jesse.maitland.github.io](https://jessemaitland.github.io/datarails/)
