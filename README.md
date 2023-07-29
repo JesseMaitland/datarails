@@ -15,7 +15,6 @@ Each step has access to a `DataBox` object that can be used to store dataframes 
 
 In addition to the `DataBox` object, each step has access to a `DataRailsContext` object that can be used to store and access variables that are not dataframes.
 
-
 ```python
 import pandas as pd
 from datarails.step import DataRailsStep
