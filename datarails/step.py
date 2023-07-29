@@ -18,43 +18,41 @@ class _StepMeta(type):
 class DataRailsStep(metaclass=_StepMeta):
     """
     Represents a step in a data pipeline process. This class is meant to be inherited from and not used directly.
-    All methods that are declared with the prefix 'step_' on the child class will be run in order in which they are
-    declared.
-
-    Please check the examples directory of this repo for a more detailed example of how this class can be used.
+    All methods that are declared with the prefix 'step_' in the child class will be run in the order they are declared.
 
     Attributes:
         dbx (DataBox): The data box object that stores and handles data for the step.
+        ctx (DataRailsContext): The context object that provides additional data and functionality.
         on_entry_callback (Callable, optional): The function to call upon entering a step. Default is None.
         on_exit_callback (Callable, optional): The function to call upon exiting a step. Default is None.
-        step_method_name_generator (Generator): A generator that yields names of step methods.
+        step_method_name_iterator (Iterator): An iterator that yields names of step methods.
     """
 
     def __init__(
-        self,
-        dbx: DataBox,
-        ctx: DataRailsContext,
-        on_entry_callback: Optional[Callable] = None,
-        on_exit_callback: Optional[Callable] = None,
+            self,
+            dbx: DataBox,
+            ctx: DataRailsContext,
+            on_entry_callback: Optional[Callable] = None,
+            on_exit_callback: Optional[Callable] = None,
     ) -> None:
         """
         Constructs all the necessary attributes for the DataRailsStep object.
 
         Args:
             dbx (DataBox): The data box object that stores and handles data for the step.
+            ctx (DataRailsContext): The context object that provides additional data and functionality.
             on_entry_callback (Callable, optional): The function to call upon entering a step. Default is None.
             on_exit_callback (Callable, optional): The function to call upon exiting a step. Default is None.
         """
         self.dbx = dbx
         self.ctx = ctx
-        self.step_method_name_generator = None
         self.on_entry_callback = on_entry_callback
         self.on_exit_callback = on_exit_callback
-        self.reset()
+        self.step_method_name_iterator = None
 
     def __str__(self) -> str:
         """
-        Returns the class name of the instance.
+        Returns a user-friendly string representation of the instance, in this case, the class name.
 
         Returns:
             str: The name of the class.
@@ -63,15 +61,17 @@ class DataRailsStep(metaclass=_StepMeta):
 
     def reset(self) -> None:
         """
-        Resets the step method name generator to its initial state. This method should be called before running the
-        steps if being used as a stepper for debugging.
+        Resets the iterator that yields names of step methods, allowing the steps to be run from the beginning.
         """
-        self.step_method_name_generator = iter(self.step_methods)
+        self.step_method_name_iterator = None
 
-    def run_steps(self) -> DataBox:
+    def run(self) -> DataBox:
         """
-        Runs all the steps in the order in which they were passed to the class constructor.
-        The order is fixed and cannot be changed.
+        Runs all the steps in the order they were declared in the child class.
+        The order is fixed and cannot be changed. Each 'step_' method is called in turn.
+
+        on_entry_callback is called at the beginning, if provided.
+        on_exit_callback is called at the end, if provided.
 
         Returns:
             DataBox: The updated DataBox after all steps have been run.
@@ -79,32 +79,28 @@ class DataRailsStep(metaclass=_StepMeta):
         if self.on_entry_callback:
             self.on_entry_callback()
 
-        while True:
-            try:
-                self.advance(stepper=False)
-            except StopIteration:
-                if self.on_exit_callback:
-                    self.on_exit_callback()
-
-                return self.dbx
-
-    def advance(self, stepper: Optional[bool] = True):
-        """
-        Advances to the next method in the pipeline. This is intended to be used as a stepper for debugging purposes.
-        Please check the examples directory in this repo for a more detailed example of how this method can be used.
-
-        Args:
-            stepper (bool, optional): If set to True, prints a message when no more steps to execute. Default is True.
-
-        Raises:
-            StopIteration: If there are no more steps to execute and stepper is False.
-        """
-        try:
-            method_name = next(self.step_method_name_generator)
+        for method_name in self.step_methods:
             method = getattr(self, method_name)
             method()
-        except StopIteration:
-            if stepper:
-                print("No more steps to execute. Reset and try again.")
-            else:
-                raise
+
+        if self.on_exit_callback:
+            self.on_exit_callback()
+
+        return self.dbx
+
+    def advance(self) -> None:
+        """
+        Advances to the next 'step_' method in the pipeline, if available.
+        This method can be used to control the execution of steps, for example in debugging scenarios.
+        """
+
+        if not self.step_method_name_iterator:
+            self.step_method_name_iterator = iter(self.step_methods)
+
+        method_name = next(self.step_method_name_iterator, None)
+
+        if method_name:
+            method = getattr(self, method_name)
+            method()
+        else:
+            print("All steps have been executed.")

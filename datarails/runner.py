@@ -1,66 +1,82 @@
-from typing import List, Optional
+from typing import List, Optional, Type
 
+from datarails.step import DataRailsStep
 from datarails.contexts import DataBox, DataRailsContext
 
 
-class StepRunner:
+class DataRailsStepRunner:
     """
-    Class to facilitate sequential execution of steps, primarily with DataBox as input.
+    This class orchestrates the execution of a sequence of DataRailsSteps. It primarily uses
+    DataBox as input, advancing through the steps and managing the DataBox state.
 
     Attributes:
-        steps (list): A list of steps to be executed.
-        steps_iterator (iterator): An iterator object to iterate over steps.
-        dbx (DataBox): A DataBox object for data management.
+        steps (List[Type[DataRailsStep]]): The ordered list of step classes to be executed.
+        dbx (DataBox): The DataBox object for data management.
+        ctx (DataRailsContext): The DataRailsContext object for context management.
     """
 
-    def __init__(self, steps: List, dbx: Optional[DataBox] = None, ctx: Optional[DataRailsContext] = None) -> None:
+    def __init__(self, steps: List[Type[DataRailsStep]], dbx: Optional[DataBox] = None,
+                 ctx: Optional[DataRailsContext] = None) -> None:
         """
-        Constructs all the necessary attributes for the StepRunner object.
+        Initializes the StepRunner object with a list of DataRailsStep classes.
 
         Args:
-            steps (list): A list of steps to be executed.
+            steps (List[Type[DataRailsStep]]): The list of step classes to be executed.
+            dbx (DataBox, optional): The DataBox object. If not provided, a new one is created.
+            ctx (DataRailsContext, optional): The DataRailsContext object. If not provided, a new one is created.
         """
         self.steps = steps
-        self.steps_iterator = iter(self.steps)
         self.dbx = dbx or DataBox()
         self.ctx = ctx or DataRailsContext()
+        self._i = 0
 
     def reset(self):
         """
-        Resets the steps_iterator to its initial state.
+        Resets the steps_iterator to its initial state, enabling the step sequence to be run again from the start.
         """
-        self.steps_iterator = iter(self.steps)
+        self._i = 0
 
-    def advance(self, stepper: Optional[bool] = True) -> None:
+    def _i_in_bounds(self) -> bool:
         """
-        Executes the next step in the steps_iterator. If stepper is set to True (default),
-        it prints a message when no more steps are left to execute, otherwise it raises StopIteration.
+        Checks if the current index is within the bounds of the steps list.
 
-        Args:
-            stepper (Optional[bool], optional): If set to True, prints a message when no more steps to
-            execute, otherwise raises StopIteration. Defaults to True.
-
-        Raises:
-            StopIteration: If stepper is False and no more steps are left to execute.
+        Returns:
+            bool: True if the index is in bounds, False otherwise.
         """
-        try:
-            step = next(self.steps_iterator)
-            step_instance = step(self.dbx, self.ctx)
-            self.dbx = step_instance.run_steps()
-        except StopIteration:
-            if stepper:
-                print("No more steps to execute. Reset and try again.")
-            else:
-                raise
+        return 0 <= self._i < len(self.steps)
+
+    def get_current_step(self):
+        """
+        Retrieves the current step instance based on the index.
+
+        Returns:
+            DataRailsStep: The current step instance.
+        """
+        return self.steps[self._i](self.dbx, self.ctx)
+
+    def print_current_step(self) -> None:
+        """
+        Prints the details of the current step to standard output.
+        """
+        step_instance = self.get_current_step()
+        print(f"The Current Step : {self._i} : {step_instance}")
+
+    def advance(self) -> None:
+        """
+        Executes the current step in the steps list and advances the index to the next one.
+        Prints a message if there are no more steps to execute.
+        """
+        if self._i_in_bounds():
+            current_step_instance = self.get_current_step()
+            self.dbx = current_step_instance.run()
+            print(f"Running step: {self._i} : {current_step_instance}")
+            self._i += 1
+        else:
+            print("All Steps Completed.")
 
     def run(self) -> None:
         """
-        Runs all the steps in the steps_iterator until no more steps are left to execute.
-        It prints a message and breaks the loop when no more steps are left to execute.
+        Executes all steps in the steps list. If all steps have been completed, it stops the execution.
         """
-        while True:
-            try:
-                self.advance(stepper=False)
-            except StopIteration:
-                print("No more steps to execute. Reset and try again.")
-                break
+        while self._i_in_bounds():
+            self.advance()
