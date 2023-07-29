@@ -67,6 +67,9 @@ jobs:
         with:
           python-version: '3.10.5'
 
+      - name: Pull Latest Version
+        run: git pull
+
       - name: Install Build
         run: pip install build==0.10.0
 
