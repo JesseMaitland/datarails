@@ -1,64 +1,90 @@
+from unittest.mock import Mock, call
+
 import pytest
 
 from datarails.contexts import DataBox, DataRailsContext
 from datarails.step import DataRailsStep
 
 
-class DummyStep(DataRailsStep):
+class TestStep(DataRailsStep):
+    def step_setup(self):
+        self.dbx.data = 0
+
     def step_one(self):
-        pass
+        self.dbx.data += 1
 
     def step_two(self):
-        pass
+        self.dbx.data += 2
 
 
 @pytest.fixture
-def test_step_instance():
-    dbx = DataBox()
-    ctx = DataRailsContext()
-    return DummyStep(dbx, ctx)
+def mock_databox():
+    dbx = Mock(spec=DataBox)
+    dbx.data = 0
+    return dbx
 
 
-def test_constructor(test_step_instance: DataRailsStep) -> None:
-    assert test_step_instance.dbx is not None
-    assert isinstance(test_step_instance.step_method_name_generator, type(iter([])))
-    assert test_step_instance.step_methods == ["step_one", "step_two"]
+@pytest.fixture
+def mock_context():
+    return Mock(spec=DataRailsContext)
 
 
-def test_reset(test_step_instance: DataRailsStep) -> None:
-    iterator_before = test_step_instance.step_method_name_generator
-    test_step_instance.reset()
-    iterator_after = test_step_instance.step_method_name_generator
-    assert iterator_before is not iterator_after
+@pytest.fixture
+def mock_callbacks():
+    return Mock(), Mock()
 
 
-def test_advance(test_step_instance: DataRailsStep) -> None:
-    assert next(test_step_instance.step_method_name_generator) == "step_one"
-    test_step_instance.advance(stepper=False)
-
-    # Here the iterator should be exhausted, as all the steps are already run
-    with pytest.raises(StopIteration):
-        next(test_step_instance.step_method_name_generator)
+def test_step_methods_collected():
+    assert TestStep.step_methods == ["step_setup", "step_one", "step_two"]
 
 
-def test_advance_no_more_steps(test_step_instance: DataRailsStep) -> None:
-    test_step_instance.advance(stepper=False)  # step_one
-    test_step_instance.advance(stepper=False)  # step_two
-    with pytest.raises(StopIteration):
-        test_step_instance.advance(stepper=False)  # Should raise StopIteration
+def test_init(mock_databox, mock_context):
+    test_step = TestStep(mock_databox, mock_context)
+    assert test_step.dbx == mock_databox
+    assert test_step.ctx == mock_context
+    assert test_step.step_method_name_iterator is None
 
 
-def test_run_steps(test_step_instance: DataRailsStep) -> None:
-    dbx = test_step_instance.run_steps()
-    assert isinstance(dbx, DataBox)
+def test_run(mock_databox, mock_context):
+    test_step = TestStep(mock_databox, mock_context)
+    test_step.run()
+    assert mock_databox.data == 3
 
 
-def test_on_entry_exit_callbacks():
-    def mock_callback():
-        return True
+def test_advance(mock_databox, mock_context):
+    test_step = TestStep(mock_databox, mock_context)
+    test_step.advance()
+    assert mock_databox.data == 0
+    test_step.advance()
+    assert mock_databox.data == 1
 
-    step_instance_with_callback = DummyStep(
-        DataBox(), DataRailsContext(), on_entry_callback=mock_callback, on_exit_callback=mock_callback
-    )
-    assert step_instance_with_callback.on_entry_callback() == True
-    assert step_instance_with_callback.on_exit_callback() == True
+
+def test_advance_no_more_steps(mock_databox, mock_context, capsys):
+    test_step = TestStep(mock_databox, mock_context)
+    test_step.advance()
+    test_step.advance()
+    test_step.advance()
+    test_step.advance()
+    captured = capsys.readouterr()
+    assert "All steps have been executed." in captured.out
+
+
+def test_reset(mock_databox, mock_context):
+    test_step = TestStep(mock_databox, mock_context)
+    test_step.advance()
+    assert mock_databox.data == 0
+    test_step.reset()
+    test_step.run()
+    assert mock_databox.data == 3
+
+
+def test_on_entry_callback(mock_databox, mock_context, mock_callbacks):
+    test_step = TestStep(mock_databox, mock_context, on_entry_callback=mock_callbacks[0])
+    test_step.run()
+    assert mock_callbacks[0].call_count == 1
+
+
+def test_on_exit_callback(mock_databox, mock_context, mock_callbacks):
+    test_step = TestStep(mock_databox, mock_context, on_exit_callback=mock_callbacks[1])
+    test_step.run()
+    assert mock_callbacks[1].call_count == 1

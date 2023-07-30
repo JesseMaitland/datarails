@@ -3,8 +3,9 @@ Steps are run in the order they are added to the runner. The constructor take a 
 A DataBox will be created automatically in the constructor and passed to each step as the execution progresses.
 
 To use this class
+
 ```python
-from datarails.runner import StepRunner
+from datarails.runner import DataRailsStepRunner
 ```
 
 ::: datarails.runner.StepRunner

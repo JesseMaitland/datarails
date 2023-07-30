@@ -23,23 +23,23 @@ In addition to the `DataBox` object, each step has access to a `DataRailsContext
 ```python
 import pandas as pd
 from datarails.step import DataRailsStep
-from datarails.runner import StepRunner
+from datarails.runner import DataRailsStepRunner
 
 
 class LoadDataFromCSV(DataRailsStep):
-    
+
     def step_load_csv(self) -> None:
         print('loading data from csv')
         df = pd.read_csv('data.csv')
-        self.dbx.put_df('data', df) # dbx now has an attribute called data that is a dataframe
+        self.dbx.put_df('data', df)  # dbx now has an attribute called data that is a dataframe
 
 
 class TransformData(DataRailsStep):
-    
+
     def step_add_new_column(self) -> None:
         print('adding new column')
         self.dbx.data['new_column'] = self.dbx.data['old_column'] * 2
-    
+
     def step_drop_all_null_rows(self) -> None:
         print('dropping null rows')
         self.dbx.data = self.dbx.data.dropna()
@@ -48,9 +48,9 @@ class TransformData(DataRailsStep):
         print('renaming columns')
         self.dbx.data = self.dbx.data.rename(columns={'new_column': 'blue_column'})
 
-        
+
 class SaveData(DataRailsStep):
-        
+
     def step_save_data(self) -> None:
         print('saving data')
         self.dbx.data.to_csv('new_data.csv')
@@ -62,16 +62,16 @@ steps = [
     LoadDataFromCSV,
     TransformData,
     SaveData
-]        
+]
 
 # pass your steps to the step runner
-runner = StepRunner(steps=steps)
+runner = DataRailsStepRunner(steps=steps)
 
 # Run the job. The steps will be run in the order they are defined in the list. Each method declared in a step will be
 # executed in the order they are defined in the class.
 
 if __name__ == '__main__':
-    runner.run() 
+    runner.run()
 
 ```
 
