@@ -8,4 +8,4 @@ To use this class
 from datarails.runner import DataRailsStepRunner
 ```
 
-::: datarails.runner.StepRunner
+::: datarails.runner.DataRailsStepRunner
