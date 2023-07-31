@@ -1,4 +1,7 @@
-site_name: "datarails Documentation"
+site_name: "Datarails Documentation"
+
+markdown_extensions:
+  - markdown_include.include
 
 plugins:
   - mkdocstrings:
@@ -14,6 +17,7 @@ theme:
     - content.code.copy
 
 nav:
+  - Home: index.md
   - DataRailsStep: step.md
   - StepRunner: runner.md
   - DataBox: databox.md
