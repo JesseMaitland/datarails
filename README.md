@@ -1,10 +1,15 @@
 [![Release python package](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml/badge.svg)](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml)
-# datarails -- A Simple Framework for Dataframe ETL
+# datarails -- A Simple, Lightweight Framework for Dataframe ETL
 ####  -- VERSION 0.3.1 --
-
 
 ## Official Documentation
 The official documentation is hosted on github pages at [jesse.maitland.github.io](https://jessemaitland.github.io/datarails/)
+
+## Installation
+Datarails is
+```bash
+pip install datarails
+```
 
 ## Example Project
 There is an example repo containing some simple ETL jobs, notebooks and commands for building documentation at [jessemaitland/datarails-example](https://github.com/JesseMaitland/datarails_examples)
@@ -27,31 +32,39 @@ from datarails.runner import DataRailsStepRunner
 
 
 class LoadDataFromCSV(DataRailsStep):
-
+    """Loads data from a CSV file into a DataBox."""
+    
     def step_load_csv(self) -> None:
+        """Loads a DataFrame from a CSV file and stores it in the DataBox under 'data'."""
         print('loading data from csv')
         df = pd.read_csv('data.csv')
-        self.dbx.put_df('data', df)  # dbx now has an attribute called data that is a dataframe
+        self.dbx.put_df('data', df)
 
 
 class TransformData(DataRailsStep):
-
+    """Applies transformation operations to a DataFrame stored in a DataBox."""
+    
     def step_add_new_column(self) -> None:
+        """Adds a new column to the DataFrame which is double the values of the 'old_column'."""
         print('adding new column')
         self.dbx.data['new_column'] = self.dbx.data['old_column'] * 2
 
     def step_drop_all_null_rows(self) -> None:
+        """Removes all rows from the DataFrame that contain any null values."""
         print('dropping null rows')
         self.dbx.data = self.dbx.data.dropna()
 
-    def rename_columns(self) -> None:
+    def step_rename_columns(self) -> None:
+        """Renames the 'new_column' in the DataFrame to 'blue_column'."""
         print('renaming columns')
         self.dbx.data = self.dbx.data.rename(columns={'new_column': 'blue_column'})
 
 
 class SaveData(DataRailsStep):
-
+    """Saves the DataFrame from a DataBox to a CSV file."""
+    
     def step_save_data(self) -> None:
+        """Saves the DataFrame to a CSV file named 'new_data.csv'."""
         print('saving data')
         self.dbx.data.to_csv('new_data.csv')
 
