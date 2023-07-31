@@ -130,3 +130,9 @@ Most often, external processes fetch data and upload it into S3 (or similar clou
 
 ### 4. Simplified Documentation
 `datarails` encourages the practice of dividing ETL jobs into smaller methods, thus facilitating the process of documentation. This feature works well with Python's native tools for generating documentation from docstrings, and such documentation can be published through your CI job. This way, it is readily available for business users or other technical users, significantly reducing the time you spend responding to queries about your ETL jobs.
+
+### 5. Facilitating Standardization Across the Organization
+
+In many organizations, ETL processes and data pipelines can be constructed in vastly different ways depending on the preferences and experience of individual developers. This can lead to considerable confusion, difficulty in maintaining code, and barriers to effective collaboration. `datarails` can help overcome these challenges by offering a standard framework for developing ETL jobs.
+
+The use of `datarails` ensures that all ETL scripts follow the same structure and approach, creating a uniform coding style across the organization. This not only makes the codebase easier to understand and maintain, but also encourages effective collaboration between team members. Moreover, the standardized structure can expedite the onboarding process for new team members, as they only need to familiarize themselves with one framework, rather than a multitude of disparate coding styles.
