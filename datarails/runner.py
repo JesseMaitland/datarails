@@ -69,8 +69,8 @@ class DataRailsStepRunner:
         """
         if self._i_in_bounds():
             current_step_instance = self.get_current_step()
-            self.dbx = current_step_instance.run()
             print(f"Running step: {self._i} : {current_step_instance}")
+            self.dbx = current_step_instance.run()
             self._i += 1
         else:
             print("All Steps Completed.")
