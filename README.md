@@ -1,7 +1,7 @@
 [![Release python package](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml/badge.svg)](https://github.com/JesseMaitland/datarails/actions/workflows/release.yml)
 
 # datarails -- A Simple, Lightweight Framework for Dataframe ETL
-####  -- VERSION 0.3.2 --
+####  -- VERSION 0.3.3 --
 
 Datarails is a simple framework for organizing your in memory Dataframe based ETL jobs. It doesn't matter of you are using `pandas`, `spark`, `glue` or anything else
 this library serves as a simple way to structure your ETL jobs. It is not a replacement for `airflow`, `luigi`, `dagster` or any other workflow management tool, but rather
