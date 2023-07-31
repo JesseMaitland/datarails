@@ -6,10 +6,14 @@ build-backend = "setuptools.build_meta"
 name = "datarails"
 version = "0.3.2"
 description = "A simple lightweight library for Dataframe based ETL pipelines"
-homepage = "https://github.com/JesseMaitland/datarails"
 readme = "README.md"
 requires-python = ">=3.8"
 
+
+[project.urls]
+homepage = "https://github.com/JesseMaitland/datarails"
+documentation = "https://jessemaitland.github.io/datarails/"
+changelog = "https://github.com/JesseMaitland/datarails/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
